@@ -4,8 +4,22 @@
  */
 package entidades.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.google.gson.Gson;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import entidades.Citas;
 import entidades.Pacientes;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,6 +34,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import utilidades.AutorizacionProducer;
+import utilidades.Token;
 
 /**
  *
@@ -76,7 +93,7 @@ public class PacientesFacadeREST extends AbstractFacade<Pacientes> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Pacientes> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
-    }
+    }        
 
     @GET
     @Path("count")
@@ -84,6 +101,49 @@ public class PacientesFacadeREST extends AbstractFacade<Pacientes> {
     public String countREST() {
         return String.valueOf(super.count());
     }
+    
+    @POST
+    @Path("login")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response iniciarSesion(Pacientes paciente){        
+        List<Pacientes> lista =  findAll();
+        for (Pacientes pl : lista) {
+            if(pl.getCurpPaciente().equals(paciente.getCurpPaciente())){
+                if(pl.getContrasenia().equals(paciente.getContrasenia())){
+                    String token = crearToken(paciente.getCurpPaciente());
+                    return Response.ok(token).build();
+                }
+            }
+        }
+        
+        
+        return Response.noContent().build();
+    }
+    
+    @POST
+    @Path("acceso")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void acceso(String citaJson){                    
+        //Enviar a rabbit                            
+        AutorizacionProducer.enviarAuth(citaJson);
+        
+        
+    }
+    
+    private String crearToken(String usr){
+        String token = null;
+        try{
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            token = JWT.create().withIssuer("auth0").withClaim("usr", usr).sign(algorithm);
+           
+        }catch(JWTCreationException exception){} catch (IllegalArgumentException ex) {
+            //Logger.getLogger(JWT_filtro.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return token;
+    }
+    
+    
 
     @Override
     protected EntityManager getEntityManager() {

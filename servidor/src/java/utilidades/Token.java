@@ -6,22 +6,23 @@ package utilidades;
 
 import entidades.Pacientes;
 import entidades.TrabajadorSalud;
+import java.io.Serializable;
 
 /**
  *
  * @author Arcke
  */
-public class Token {
+public class Token implements Serializable{
     private TrabajadorSalud destinatario;
     private Pacientes remitente;
     private String tiempo;    
     private boolean esValido;
 
-    public Token(TrabajadorSalud destinatario, Pacientes remitente, String tiempo, boolean caducado) {
+    public Token(TrabajadorSalud destinatario, Pacientes remitente, String tiempo, boolean esValido) {
         this.destinatario = destinatario;
         this.remitente = remitente;
         this.tiempo = tiempo;
-        this.esValido = caducado;
+        this.esValido = esValido;
     }
     
    

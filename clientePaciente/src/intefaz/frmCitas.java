@@ -4,12 +4,15 @@
  */
 package intefaz;
 
-import servicios.servicioCitas;
+import com.google.gson.Gson;
+import servicios.clienteCitas;
 import entidades.Citas;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import servicios.clientePaciente;
 
 /**
  *
@@ -17,7 +20,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class frmCitas extends javax.swing.JFrame {
     
-    servicioCitas svc = new servicioCitas();
+    clienteCitas svc = new clienteCitas();
+    clientePaciente clientePaciente = new clientePaciente();
     List<Citas> citas;
     /**
      * Creates new form frmCitas
@@ -30,6 +34,7 @@ public class frmCitas extends javax.swing.JFrame {
             //Recorremos la citas y removemos las que no sean del paciente usuario
         }
         actualizarTabla();
+        setLocationRelativeTo(null);
         
     }
     
@@ -128,9 +133,16 @@ public class frmCitas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAccesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccesoActionPerformed
-        // TODO add your handling code here:
-        
-        
+        // TODO add your handling code here:        
+        int i = tblCitas.getSelectedRow();
+        if( i != -1){
+            Gson gson = new Gson();
+            String cita = gson.toJson(citas.get(i));
+            System.out.println("enviando :" + cita);
+            clientePaciente.acceso_JSON(cita);
+        }else{
+            JOptionPane.showMessageDialog(this, "Seleccione el expediente al cual desea brinda el acceso");
+        }                        
         
     }//GEN-LAST:event_btnAccesoActionPerformed
 

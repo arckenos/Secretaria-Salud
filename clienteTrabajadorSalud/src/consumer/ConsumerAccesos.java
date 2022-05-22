@@ -51,6 +51,7 @@ public class ConsumerAccesos {
             Token token;
             try {
                 token = (Token) is.readObject();
+                accesos.add(token);
                 
                 System.out.println(" Recibido token de acceso al expediente de " + token.getRemitente().getNombreCompleto()  + "'");
             } catch (IOException ex) {

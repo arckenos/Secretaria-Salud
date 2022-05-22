@@ -27,6 +27,8 @@ public class clientePaciente {
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:8080/servidor/webresources";
+    public static String AUTH_TOKEN = "";
+    public static String AUTH_HEADER = "Authorization";
 
     public clientePaciente() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -36,7 +38,7 @@ public class clientePaciente {
     public String countREST() throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path("count");
-        return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).get(String.class);
+        return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).header(AUTH_HEADER,AUTH_TOKEN).get(String.class);
     }
 
     public void edit_XML(Object requestEntity, String id) throws ClientErrorException {
@@ -92,7 +94,9 @@ public class clientePaciente {
     }
 
     public Response iniciarSesion_JSON(Object requestEntity) throws ClientErrorException {
-        return webTarget.path("login").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), Response.class);
+        Response resource = webTarget.path("login").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), Response.class);
+        AUTH_TOKEN = resource.getHeaderString("Authorization");
+        return resource;
     }
 
     public <T> T findAll_XML(Class<T> responseType) throws ClientErrorException {

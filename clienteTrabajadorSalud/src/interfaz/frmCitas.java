@@ -6,8 +6,10 @@ package interfaz;
 
 import consumer.ConsumerAccesos;
 import entidades.Citas;
+import entidades.Pacientes;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import servicios.clienteCitas;
 import utilidades.Token;
@@ -142,12 +144,26 @@ public class frmCitas extends javax.swing.JFrame {
 
     private void btnAccederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccederActionPerformed
         // TODO add your handling code here:
-        List<Token> tokens = ConsumerAccesos.accesos;
-        for (Token token : tokens) {
-            System.out.println("Acceso de "+token.getDestinatario());
+        int i = tblCitas.getSelectedRow();
+        if(i != -1){
+            solicitarAcceso(citas.get(i).getIdPaciente());
+        }else{
+            JOptionPane.showMessageDialog(this, "Seleccione una cita valida");
         }
     }//GEN-LAST:event_btnAccederActionPerformed
-
+    
+    private void solicitarAcceso(Pacientes paciente){
+        List<Token> tokens = ConsumerAccesos.accesos;
+        for (Token token : tokens) {
+            if(token.getRemitente().equals(paciente)){
+                //Abrir expediente
+                
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(this, "No tienes que acceso a este expediente");
+    }
+    
     /**
      * @param args the command line arguments
      */

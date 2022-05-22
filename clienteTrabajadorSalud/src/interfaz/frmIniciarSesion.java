@@ -3,7 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package interfaz;
-
+import consumer.ConsumerAccesos;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Arcke
@@ -16,6 +18,11 @@ public class frmIniciarSesion extends javax.swing.JFrame {
     public frmIniciarSesion() {
         initComponents();
         setLocationRelativeTo(null);
+        try {            
+            ConsumerAccesos.iniciarConsumer();
+        } catch (Exception ex) {
+            Logger.getLogger(frmIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

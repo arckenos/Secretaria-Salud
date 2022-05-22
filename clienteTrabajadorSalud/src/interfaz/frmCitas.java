@@ -4,11 +4,13 @@
  */
 package interfaz;
 
+import consumer.ConsumerAccesos;
 import entidades.Citas;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import servicios.clienteCitas;
+import utilidades.Token;
 
 /**
  *
@@ -104,6 +106,11 @@ public class frmCitas extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblCitas);
 
         btnAcceder.setText("Acceder Expediente");
+        btnAcceder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAccederActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -132,6 +139,14 @@ public class frmCitas extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAccederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccederActionPerformed
+        // TODO add your handling code here:
+        List<Token> tokens = ConsumerAccesos.accesos;
+        for (Token token : tokens) {
+            System.out.println("Acceso de "+token.getDestinatario());
+        }
+    }//GEN-LAST:event_btnAccederActionPerformed
 
     /**
      * @param args the command line arguments

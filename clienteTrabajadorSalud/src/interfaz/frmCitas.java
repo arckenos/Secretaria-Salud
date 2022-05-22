@@ -2,17 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package intefaz;
+package interfaz;
 
-import com.google.gson.Gson;
-import servicios.clienteCitas;
 import entidades.Citas;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import servicios.clientePaciente;
+import servicios.clienteCitas;
 
 /**
  *
@@ -21,33 +17,33 @@ import servicios.clientePaciente;
 public class frmCitas extends javax.swing.JFrame {
     
     clienteCitas svc = new clienteCitas();
-    clientePaciente clientePaciente = new clientePaciente();
     List<Citas> citas;
+    /**
+    
     /**
      * Creates new form frmCitas
      */
     public frmCitas() {
         initComponents();
-        
         citas = Arrays.asList(svc.findAll_JSON(Citas[].class));
         for (Citas cita : citas) {
             //Recorremos la citas y removemos las que no sean del paciente usuario
-            
         }
         actualizarTabla();
         setLocationRelativeTo(null);
-        
     }
     
-    public void actualizarTabla(){
-        String col[] = {"No.Cita","Trabajador Salud"};
+    
+    
+     public void actualizarTabla(){
+        String col[] = {"No.Cita","Paciente"};
         DefaultTableModel modelo  = new DefaultTableModel(col,0);
         Object [] obj = new Object [2];
         
        
         for (Citas cita : citas) {
             obj[0] = cita.getIdCitas();
-            obj[1] = cita.getIdTrabajadorSalud().getNombreTrabajadorSalud();
+            obj[1] = cita.getIdPaciente().getNombreCompleto();
             modelo.addRow(obj);
         }
         tblCitas.setModel(modelo);
@@ -67,7 +63,7 @@ public class frmCitas extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblCitas = new javax.swing.JTable();
-        btnAcceso = new javax.swing.JButton();
+        btnAcceder = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,7 +78,7 @@ public class frmCitas extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(148, 148, 148)
+                .addGap(149, 149, 149)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -107,13 +103,7 @@ public class frmCitas extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblCitas);
 
-        btnAcceso.setText("Brindar Acceso");
-        btnAcceso.setToolTipText("");
-        btnAcceso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAccesoActionPerformed(evt);
-            }
-        });
+        btnAcceder.setText("Acceder Expediente");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -121,42 +111,27 @@ public class frmCitas extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(146, 146, 146)
-                        .addComponent(btnAcceso)))
+                .addGap(29, 29, 29)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAcceder)
+                .addGap(134, 134, 134))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
+                .addGap(34, 34, 34)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAcceso)
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addComponent(btnAcceder)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnAccesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccesoActionPerformed
-        // TODO add your handling code here:        
-        int i = tblCitas.getSelectedRow();
-        if( i != -1){
-            Gson gson = new Gson();
-            String cita = gson.toJson(citas.get(i));
-            System.out.println("enviando :" + cita);
-            clientePaciente.acceso_JSON(cita);
-        }else{
-            JOptionPane.showMessageDialog(this, "Seleccione el expediente al cual desea brinda el acceso");
-        }                        
-        
-    }//GEN-LAST:event_btnAccesoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -194,7 +169,7 @@ public class frmCitas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAcceso;
+    private javax.swing.JButton btnAcceder;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

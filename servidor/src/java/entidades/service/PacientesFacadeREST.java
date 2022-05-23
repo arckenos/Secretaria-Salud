@@ -93,20 +93,24 @@ public class PacientesFacadeREST extends AbstractFacade<Pacientes> {
     @POST
     @Path("login")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response iniciarSesion(Pacientes paciente){        
-        List<Pacientes> lista =  findAll();
-        for (Pacientes pl : lista) {
-            if(pl.getCurpPaciente().equals(paciente.getCurpPaciente())){
-                if(pl.getContrasenia().equals(paciente.getContrasenia())){
-                    String token = crearToken(paciente.getCurpPaciente());
-                    return Response.ok(token).build();
-                }
-            }
-        }
+    public Response iniciarSesion(String curp){        
+        Pacientes pacientes = findByCurp(curp);  
+        return Response.ok(pacientes).build();                        
         
-        
-        return Response.noContent().build();
     }
+    
+    @GET
+    @Path("name")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Pacientes findByCurp(String curp){
+        List<Pacientes> lista = findAll();
+        for (Pacientes paciente : lista) {
+            if(paciente.getCurpPaciente().equals(curp))
+                return paciente;
+        }
+        return null;
+    }
+
     
     @POST
     @Path("acceso")

@@ -4,12 +4,19 @@
  */
 package intefaz;
 
+import entidades.Pacientes;
+import javax.ws.rs.core.Response;
+import org.glassfish.jersey.client.RequestEntityProcessing;
+import servicios.clientePaciente;
+
 /**
  *
  * @author Arcke
  */
 public class frmIniciarSesion extends javax.swing.JFrame {
-
+    
+    
+    clientePaciente clientPaciente = new clientePaciente();
     /**
      * Creates new form frmIniciarSesion
      */
@@ -70,12 +77,14 @@ public class frmIniciarSesion extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtCurp, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                    .addComponent(jPasswordField2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtCurp, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(jPasswordField2)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(41, 41, 41)
                         .addComponent(btnIngresar)))
                 .addGap(103, 103, 103))
         );
@@ -102,7 +111,11 @@ public class frmIniciarSesion extends javax.swing.JFrame {
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         // TODO add your handling code here:
-        frmCitas vista = new frmCitas();
+        
+        Response response = clientPaciente.iniciarSesion_JSON(txtCurp.getText());
+        Pacientes pacientes = response.readEntity(Pacientes.class);
+        
+        frmCitas vista = new frmCitas(pacientes);
         vista.setVisible(true);
         dispose();
         

@@ -4,18 +4,26 @@
  */
 package interfaz;
 
+import entidades.Citas;
+import javax.swing.JFrame;
+
 /**
  *
  * @author Arcke
  */
 public class frmHuella extends javax.swing.JFrame {
-
+    
+    
+    private JFrame past;
+    private Citas cita;
     /**
      * Creates new form frmHuella
      */
-    public frmHuella() {
+    public frmHuella(JFrame past, Citas cita) {
         initComponents();
         setLocationRelativeTo(null);
+        this.past = past;
+        this.cita = cita;
     }
 
     /**
@@ -71,7 +79,13 @@ public class frmHuella extends javax.swing.JFrame {
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:     
-        dispose();
+       this.setVisible(false);
+        past.dispose();
+        frmExpediente vista = new frmExpediente(cita.getIdPaciente(), cita.getIdTrabajadorSalud());
+        vista.setVisible(true);
+        
+
+        
     }//GEN-LAST:event_jLabel3MouseClicked
 
     /**
@@ -104,7 +118,7 @@ public class frmHuella extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmHuella().setVisible(true);
+                //new frmHuella().setVisible(true);
             }
         });
     }

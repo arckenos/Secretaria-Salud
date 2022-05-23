@@ -4,25 +4,28 @@
  */
 package interfaz;
 import consumer.ConsumerAccesos;
+import entidades.Pacientes;
+import entidades.TrabajadorSalud;
 import java.util.logging.Level;
+import servicios.clienteCitas;
 import java.util.logging.Logger;
+import javax.ws.rs.core.Response;
+import servicios.clienteTrabajador;
 /**
  *
  * @author Arcke
  */
 public class frmIniciarSesion extends javax.swing.JFrame {
-
+    
+    
+    
     /**
      * Creates new form frmIniciarSesion
      */
     public frmIniciarSesion() {
         initComponents();
         setLocationRelativeTo(null);
-        try {            
-            ConsumerAccesos.iniciarConsumer();
-        } catch (Exception ex) {
-            Logger.getLogger(frmIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
 
     }
 
@@ -121,8 +124,16 @@ public class frmIniciarSesion extends javax.swing.JFrame {
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         // TODO add your handling code here:
-        frmCitas vista = new frmCitas();
+        clienteTrabajador cliTrabajador = new clienteTrabajador();
+        Response respone = cliTrabajador.iniciarSesion_JSON(txtCedula.getText());
+        TrabajadorSalud trabajador = respone.readEntity(TrabajadorSalud.class);                
+        frmCitas vista = new frmCitas(trabajador);
         vista.setVisible(true);
+        try {            
+            ConsumerAccesos.iniciarConsumer(trabajador.getCedulaProfesional());
+        } catch (Exception ex) {
+            Logger.getLogger(frmIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         dispose();
         
     }//GEN-LAST:event_btnIngresarActionPerformed

@@ -20,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -49,8 +50,8 @@ public class TrabajadorSaludFacadeREST extends AbstractFacade<TrabajadorSalud> {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Integer id, TrabajadorSalud entity) {
         super.edit(entity);
-    }
 
+    }
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
@@ -70,6 +71,19 @@ public class TrabajadorSaludFacadeREST extends AbstractFacade<TrabajadorSalud> {
     public List<TrabajadorSalud> findAll() {
         return super.findAll();
     }
+    
+    @GET    
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public TrabajadorSalud findByCedula(String cedula){
+        List<TrabajadorSalud> lista = findAll();
+        for (TrabajadorSalud trabajadorSalud : lista) {
+            if (trabajadorSalud.getCedulaProfesional().equals(cedula)){
+                return trabajadorSalud;
+            }
+        }
+        
+        return null;
+    }
 
     @GET
     @Path("{from}/{to}")
@@ -77,6 +91,16 @@ public class TrabajadorSaludFacadeREST extends AbstractFacade<TrabajadorSalud> {
     public List<TrabajadorSalud> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
+    
+    @POST
+    @Path("login")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response iniciarSesion(String cedula){        
+        TrabajadorSalud trabajadorSalud = findByCedula(cedula);
+        return Response.ok(trabajadorSalud).build();                        
+        
+    }
+    
 
     @GET
     @Path("count")

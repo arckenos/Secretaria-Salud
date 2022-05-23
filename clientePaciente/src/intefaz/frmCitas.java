@@ -7,6 +7,7 @@ package intefaz;
 import com.google.gson.Gson;
 import servicios.clienteCitas;
 import entidades.Citas;
+import entidades.Pacientes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,18 +22,25 @@ import servicios.clientePaciente;
 public class frmCitas extends javax.swing.JFrame {
     
     clienteCitas svc = new clienteCitas();
-    clientePaciente clientePaciente = new clientePaciente();
-    List<Citas> citas;
+    clientePaciente clientePaciente = new clientePaciente();   
+    ArrayList<Citas> citas;
+    Pacientes paciente;
     /**
      * Creates new form frmCitas
      */
-    public frmCitas() {
+    public frmCitas(Pacientes paciente) {
         initComponents();
-        
-        citas = Arrays.asList(svc.findAll_JSON(Citas[].class));
-        for (Citas cita : citas) {
-            //Recorremos la citas y removemos las que no sean del paciente usuario
-            
+        this.paciente = paciente;
+        List<Citas> lista = Arrays.asList(svc.findAll_JSON(Citas[].class));
+
+        citas = new ArrayList<>(lista);
+        //Recorremos la citas y removemos las que no sean del paciente usuario
+        for (int i = 0; i < citas.size(); i++) {
+            if (!citas.get(i).getIdPaciente().equals(paciente)) {
+                Citas remove = citas.remove(i);
+                i--;
+            }
+
         }
         actualizarTabla();
         setLocationRelativeTo(null);
@@ -188,7 +196,7 @@ public class frmCitas extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmCitas().setVisible(true);
+                //new frmCitas().setVisible(true);
             }
         });
     }

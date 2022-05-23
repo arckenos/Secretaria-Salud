@@ -28,10 +28,8 @@ public class ConsumerAccesos {
     private final static String QUEUE_NAME = "hello";
     private static String EXCHANGE_NAME = "CDP12345";
     
-    public static void iniciarConsumer() throws Exception{
-         System.out.println("Introduzca su cedula");
-        Scanner tec = new Scanner(System.in);
-        EXCHANGE_NAME = tec.nextLine();
+    public static void iniciarConsumer(String cedula) throws Exception{
+        EXCHANGE_NAME = cedula;
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
         Connection connection = factory.newConnection();

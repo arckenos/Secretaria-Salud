@@ -7,6 +7,8 @@ package interfaz;
 import consumer.ConsumerAccesos;
 import entidades.Citas;
 import entidades.Pacientes;
+import entidades.TrabajadorSalud;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -21,17 +23,24 @@ import utilidades.Token;
 public class frmCitas extends javax.swing.JFrame {
     
     clienteCitas svc = new clienteCitas();
-    List<Citas> citas;
+    ArrayList<Citas> citas;
+    TrabajadorSalud trabajador;
     /**
     
     /**
      * Creates new form frmCitas
      */
-    public frmCitas() {
+    public frmCitas(TrabajadorSalud trabajador) {
         initComponents();
-        citas = Arrays.asList(svc.findAll_JSON(Citas[].class));
-        for (Citas cita : citas) {
-            //Recorremos la citas y removemos las que no sean del paciente usuario
+        this.trabajador = trabajador;
+        List<Citas> lista = Arrays.asList(svc.findAll_JSON(Citas[].class));
+        citas = new ArrayList<>(lista);
+        for (int i = 0; i < citas.size(); i++) {
+            if(!citas.get(i).getIdTrabajadorSalud().equals(trabajador)){
+                citas.remove(i);
+                i--;
+            }
+            
         }
         actualizarTabla();
         setLocationRelativeTo(null);
@@ -134,8 +143,8 @@ public class frmCitas extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAcceder)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAcceder, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -146,7 +155,7 @@ public class frmCitas extends javax.swing.JFrame {
         // TODO add your handling code here:
         int i = tblCitas.getSelectedRow();
         if(i != -1){
-            solicitarAcceso(citas.get(i).getIdPaciente());
+            solicitarAcceso(citas.get(i).getIdPaciente());                        
         }else{
             JOptionPane.showMessageDialog(this, "Seleccione una cita valida");
         }
@@ -155,9 +164,10 @@ public class frmCitas extends javax.swing.JFrame {
     private void solicitarAcceso(Pacientes paciente){
         List<Token> tokens = ConsumerAccesos.accesos;
         for (Token token : tokens) {
-            if(token.getRemitente().equals(paciente)){
+            if(token.getRemitente().getIdPaciente().equals(paciente.getIdPaciente())){
                 //Abrir expediente
-                
+                frmHuella vista = new frmHuella(this, citas.get(tblCitas.getSelectedRow()));
+                vista.setVisible(true);
                 return;
             }
         }
@@ -194,7 +204,7 @@ public class frmCitas extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmCitas().setVisible(true);
+                //new frmCitas().setVisible(true);
             }
         });
     }
